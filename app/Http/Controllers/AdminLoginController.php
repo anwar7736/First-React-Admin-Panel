@@ -16,9 +16,9 @@ class AdminLoginController extends Controller
     function onLogin(Request $request){
         $UserName =$request->UserName;
         $Password =$request->Password;
-        $count=AdminLoginModel::where('user_name',$UserName)->where('password',$Password)->count();
+        $count=AdminLoginModel::where(['user_name'=>$UserName, 'password'=>$Password])->count();
         if($count==1){
-            $request->session()->put('userNameKey',$UserName);
+            $request->session()->put(['user_name'=>$UserName, 'user_pass'=>$Password]);
             return "1";
         }else{
             return "0";
@@ -26,8 +26,8 @@ class AdminLoginController extends Controller
     }
 
     function onLogout(Request $request){
-        $request->session()->flash('userNameKey');
-        return redirect('/Login');
+        $request->session()->flush();
+        return redirect('/login');
     }
 
 }

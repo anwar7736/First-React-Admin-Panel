@@ -16,8 +16,7 @@ class HomeController extends Controller
         $course=CourseTableModel::count();
         $project=ProjectModel::count();
         $service=ServiceModel::count();
-        $totalCount=array('review'=>$review,'contact'=>$contact,'course'=>$course,'project'=>$project,'service'=>$service);
-        return json_encode($totalCount);
+      return  $totalCount=array('review'=>$review,'contact'=>$contact,'course'=>$course,'project'=>$project,'service'=>$service);
     }
 
 }

@@ -10,13 +10,13 @@ import swal from 'sweetalert';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Axios from 'axios';
-
+import cogoToast from 'cogo-toast';
 
 class ContactPage extends Component {
 	constructor(){
 		super()
 		this.state = {
-			contactData : [],
+			Data : [],
 			isLoading : true,
 			isError : false,
 			deleteID : '',
@@ -25,64 +25,39 @@ class ContactPage extends Component {
 	componentDidMount(){
 		Axios.get('http://127.0.0.1:8000/ContactList')
 		.then(response=>{
-			this.setState({isLoading:false, isError:false, contactData : response.data});
+			this.setState({Data : response.data});
 		})
 		.catch(error=>{
-			this.setState({isLoading:false, isError:true});
+			
 		})
 	}
 	onClick=()=>{
 		if(this.state.deleteID===''){
-			swal({
-			  title: "Please select any row",
-			  icon: "warning",
-			  buttons: true,
-			  dangerMode: true,
-			})
+			cogoToast.warn('Please select any row!');
 		}else{
-		swal({
-		  title: "Are you sure?",
-		  text: "Do you want to delete this message?",
-		  icon: "warning",
-		  buttons: true,
-		  dangerMode: true,
-		})
-		.then((willDelete) => {
+			if(confirm('Do you want to delete this data?')){
 			Axios.post('http://127.0.0.1:8000/ContactDelete', {id: this.state.deleteID})
 			.then(response=>{
+					cogoToast.success('Data has been deleted');
 					this.componentDidMount();
 					this.setState({deleteID:''})
 			})
 			.catch(error=>{
-				
+				cogoToast.error('Something went wrong!');
 			})
-		  if (willDelete) {
-		    swal("Poof! Your imaginary file has been deleted!", {
-		      icon: "success",
-		    });
-		  } 
-		});
-
+	}
 }
 
 	}
     render() {
-    	if(this.state.isLoading==true && this.state.isError==false)
-    	{
-    		return <Loading/>
-    	}
-    	else if(this.state.isError==true && this.state.isLoading==false)
-    	{
-    		return <Error/>
-    	}
-    	else{
-		const allData = this.state.contactData;
+    	
+		const allData = this.state.Data;
 
 		const columns = [
 		{dataField: 'id',text: 'ID',sort:true},  
-		{dataField: 'name',text: 'Sender Name',sort:true}, 
-		{dataField: 'email',text: 'Sender Email Address'},
-		{dataField: 'message',text: 'Message From Sender'}
+		{dataField: 'name',text: 'Name',sort:true}, 
+		{dataField: 'email',text: 'Email'},
+		{dataField: 'message',text: 'Message'}
 		];
 		const selectRow = {
 		  mode: 'radio',
@@ -108,7 +83,7 @@ class ContactPage extends Component {
             </Fragment>
         );
      }
-    }
+    
 }
 
 export default ContactPage;

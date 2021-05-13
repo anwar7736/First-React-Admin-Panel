@@ -14,7 +14,7 @@ class ContactController extends Controller
 
     function ContactDelete(Request $request){
         $id=$request->input('id');
-        $result=ContactTableModel::where('id','=',$id)->delete();
+        $result=ContactTableModel::where('id',$id)->delete();
         return $result;
     }
 }

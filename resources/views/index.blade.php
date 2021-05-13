@@ -14,7 +14,6 @@
     <div id="root">
         
 
-
     </div>
     <script type="text/javascript" src="{{asset('js/main.js')}}"></script>
   </body>

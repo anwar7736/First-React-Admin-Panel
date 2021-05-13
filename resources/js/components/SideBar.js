@@ -43,7 +43,7 @@ class SideBar extends Component {
                     <NavLink><Link className="NavItem" to="/project"> <FontAwesomeIcon icon={faCode} /> <span className={this.state.NavText}>Projects</span></Link></NavLink>
                     <NavLink><Link className="NavItem" to="/services"> <FontAwesomeIcon icon={faFolder} /> <span className={this.state.NavText}>Services</span></Link></NavLink>
                     <NavLink><Link className="NavItem" to="/review"> <FontAwesomeIcon icon={faComment} /> <span className={this.state.NavText}>Review</span></Link></NavLink>
-                    <a className=" ml-3 NavItem" href="#"> <FontAwesomeIcon icon={faPowerOff} /> <span className={this.state.NavText}>Sign Out</span></a>
+                    <a className=" ml-3 NavItem" href="/logout"> <FontAwesomeIcon icon={faPowerOff} /> <span className={this.state.NavText}>Sign Out</span></a>
                 </div>
                 <div onClick={this.showHideSideNav} className={this.state.mainDivOverlay}>
 
