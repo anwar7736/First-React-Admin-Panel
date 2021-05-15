@@ -9,7 +9,6 @@ use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\AdminLoginController;
 
-Route::view('/toastr', 'toastr');
 
 Route::group(['middleware'=>'CheckLogin'], function(){
 
@@ -25,6 +24,7 @@ Route::post('/ContactDelete', [ContactController::class, 'ContactDelete']);
 //Courses Data Manage....
 Route::get('/CourseList', [CourseController::class, 'CourseList']);
 Route::post('/CourseDelete',[CourseController::class, 'CourseDelete']);
+Route::post('/AddCourse',[CourseController::class, 'AddCourse']);
 
 
 //Project Data Manage....

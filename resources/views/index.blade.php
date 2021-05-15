@@ -7,7 +7,7 @@
     <link rel="stylesheet" type="text/css" href="{{asset('css/app.css')}}"/>
     <link rel="stylesheet" type="text/css" href="{{asset('css/responsive.css')}}"/>
     <link rel="stylesheet" type="text/css" href="{{asset('css/sideNav.css')}}"/>
-    <link rel="stylesheet" type="text/css" href="{{asset('css/styles.css')}}"/>
+    <link rel="stylesheet" type="text/css" href="{{asset('css/style.css')}}"/>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>

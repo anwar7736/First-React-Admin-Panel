@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 13, 2021 at 10:48 PM
+-- Generation Time: May 16, 2021 at 01:06 AM
 -- Server version: 10.4.11-MariaDB
 -- PHP Version: 7.4.1
 
@@ -107,8 +107,6 @@ CREATE TABLE `contact_table` (
 --
 
 INSERT INTO `contact_table` (`id`, `name`, `email`, `message`) VALUES
-(122, 'Md Anwar Hossain', 'anwarhossain7736@gmail.com', 'Hello Buddy, How are you?'),
-(123, 'Md Anwar Hossain', 'anwarhossain7736@gmail.com', 'Hello Buddy, How are you?'),
 (124, 'Md Anwar Hossain', 'anwarhossain7736@gmail.com', 'Hello Buddy, How are you?'),
 (125, 'Md Anwar Hossain', 'anwarhossain7736@gmail.com', 'Hello Buddy, How are you?'),
 (126, 'Md Anwar Hossain', 'anwarhossain7736@gmail.com', 'Hello Buddy, How are you?'),
@@ -375,7 +373,7 @@ ALTER TABLE `chart_data`
 -- AUTO_INCREMENT for table `client_review`
 --
 ALTER TABLE `client_review`
-  MODIFY `id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
 
 --
 -- AUTO_INCREMENT for table `contact_table`
@@ -387,7 +385,7 @@ ALTER TABLE `contact_table`
 -- AUTO_INCREMENT for table `courses_table`
 --
 ALTER TABLE `courses_table`
-  MODIFY `id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- AUTO_INCREMENT for table `footer_table`
@@ -411,13 +409,13 @@ ALTER TABLE `information_etc`
 -- AUTO_INCREMENT for table `projects_table`
 --
 ALTER TABLE `projects_table`
-  MODIFY `id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT for table `services_table`
 --
 ALTER TABLE `services_table`
-  MODIFY `id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

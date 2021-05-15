@@ -24,8 +24,8 @@ class ServiceController extends Controller
         return $result;
     }
     function AddService(Request $request){
-        $title=  $request->input('title');
-        $des=  $request->input('des');
+        $title=  $request->input('name');
+        $des=  $request->input('desc');
         $PhotoPath=$request->file('photo')->store('public');
         $PhotoName=explode("/", $PhotoPath)[1];
         $PhotoURL="http://".$_SERVER['HTTP_HOST']."/storage/".$PhotoName;

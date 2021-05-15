@@ -1,7 +1,7 @@
 import React, {Component, Fragment} from 'react';
 import Loading from '../components/loadingDiv';
 import Error from '../components/wentWrong';
-import {Button} from 'react-bootstrap';
+import {Button, Modal, Form} from 'react-bootstrap';
 import SideBar from '../components/SideBar';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
@@ -20,6 +20,11 @@ class ServicePage extends Component {
 			isLoading : true,
 			isError : false,
 			deleteID : '',
+			addNewModal : false,
+			name:'',
+            desc:'',
+            photo:'',
+            submitBtnText : 'Submit',
 		}
 	}
 	componentDidMount(){
@@ -30,6 +35,76 @@ class ServicePage extends Component {
 		.catch(error=>{
 			
 		})
+	}
+	modalOpen=()=>{
+		this.setState({addNewModal: true});
+	}
+	modalClose=()=>{
+		this.setState({addNewModal: false});
+	}
+	titleOnChange=(e)=>{
+		this.setState({name: e.target.value});
+
+	}
+	desOnChange=(e)=>{
+		this.setState({desc: e.target.value});
+	}
+	fileOnChange=(e)=>{
+		this.setState({photo: e.target.files[0]});
+	}
+	addFormSubmit=(e)=>{
+		e.preventDefault();
+		let name = this.state.name;
+		let desc = this.state.desc;
+		let photo = this.state.photo;
+		if(name=='')
+		{
+			cogoToast.warn('Service name field is required!');
+		}
+		else if(desc=='')
+		{
+			cogoToast.warn('Service description field is required!');
+		}
+		else if(photo=='')
+		{
+			cogoToast.warn('Service photo field is required!');
+		}
+		else{
+			this.setState({submitBtnText:'Submitting...'});
+			let url = '/AddService';
+			let myFormData = new FormData();
+			myFormData.append('name', name);
+			myFormData.append('desc', desc);
+			myFormData.append('photo', photo);
+			let config={
+            headers:{'Content-Type':'multipart/form-data'}
+       		 }
+			Axios.post(url,myFormData,config)
+			.then(response=>{
+				if(response.status==200)
+				{
+					this.setState({submitBtnText:'Submitted'});
+					if(response.data==1)
+					{
+						setTimeout(()=>{
+							this.setState({submitBtnText:'Submit'});
+							this.setState({name:''});
+							this.setState({desc:''});
+							this.setState({photo:''});
+							this.modalClose();
+							this.componentDidMount();
+							cogoToast.success('Data has been added');
+
+						},1000);
+
+					}
+				}
+			})
+			.catch(error=>{
+				this.setState({submitBtnText:'Error'});
+				alert(error);
+			})
+		}
 	}
 	onClick=()=>{
 		if(this.state.deleteID===''){
@@ -73,7 +148,8 @@ class ServicePage extends Component {
         return (
             <Fragment>
                 <SideBar title="Services">
-                	<Button onClick={this.onClick} variant="danger" className="btn-sm mb-2">Delete</Button>
+                	<Button onClick={this.modalOpen} variant="success" className="btn-sm">Add New</Button>
+                	<Button onClick={this.onClick} variant="danger" className="btn-sm m-2">Delete</Button>
                 	<BootstrapTable 
                 		keyField='id' 
                 		data={ allData } 
@@ -83,6 +159,37 @@ class ServicePage extends Component {
 
                 	/>
                 </SideBar>
+                <Modal show={this.state.addNewModal} onHide={this.modalClose}>
+                        <Modal.Header closeButton>
+                            <h6>Add New Service</h6>
+                        </Modal.Header>
+                        <Modal.Body>
+                            <Form onSubmit={this.addFormSubmit}>
+                                <Form.Group >
+                                    <Form.Label>Service Name</Form.Label>
+                                    <Form.Control onChange={this.titleOnChange} type="text" placeholder="Service Name" />
+                                </Form.Group>
+                                <Form.Group >
+                                    <Form.Label>Service Description</Form.Label>
+                                    <Form.Control onChange={this.desOnChange} type="text" placeholder="Service Description" />
+                                </Form.Group>
+                                <Form.Group >
+                                    <Form.Label>Service Image</Form.Label>
+                                    <Form.Control onChange={this.fileOnChange} type="file" placeholder="Service Image" />
+                                </Form.Group>
+                                <Button variant="primary" type="submit">
+                                    {this.state.submitBtnText}
+                                </Button>
+                            </Form>
+
+
+                        </Modal.Body>
+                        <Modal.Footer>
+                            <Button variant="secondary" onClick={this.modalClose}>
+                                Close
+                            </Button>
+                        </Modal.Footer>
+                    </Modal>
             </Fragment>
         );
      }

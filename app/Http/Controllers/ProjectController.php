@@ -18,8 +18,8 @@ class ProjectController extends Controller
         $id=$request->input('id');
 
 
-        $img_one= ProjectModel::where('id','=',$id)->get(['img_one']);
-        $img_two=ProjectModel::where('id','=',$id)->get(['img_two']);
+        $img_one= ProjectModel::where('id',$id)->get(['img_one']);
+        $img_two=ProjectModel::where('id',$id)->get(['img_two']);
 
         $img_one_name=explode('/',$img_one[0]['img_one'])[4];
         $img_two_name=explode('/',$img_two[0]['img_two'])[4];

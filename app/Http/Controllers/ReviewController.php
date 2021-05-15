@@ -5,7 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\ClientReviewModel;
 use App\Models\ContactTableModel;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
+use Storage, DB;
+
 
 class ReviewController extends Controller
 {
@@ -16,18 +17,16 @@ class ReviewController extends Controller
     function ReviewDelete(Request $request){
         $id=$request->input('id');
 
-        $client_img=ClientReviewModel::where('id','=',$id)->get(['client_img']);
+        $client_img=ClientReviewModel::where('id',$id)->get();
         $client_img_name=explode('/',$client_img[0]['client_img'])[4];
         Storage::delete('public/'.$client_img_name);
-
-
-        $result=ClientReviewModel::where('id','=',$id)->delete();
+        $result=ClientReviewModel::where('id',$id)->delete();
         return $result;
     }
 
     function AddReview(Request $request){
         $title=  $request->input('title');
-        $des=  $request->input('des');
+        $des=  $request->input('desc');
         $PhotoPath=$request->file('photo')->store('public');
         $PhotoName=explode("/", $PhotoPath)[1];
 
