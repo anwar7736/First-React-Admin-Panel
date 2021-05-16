@@ -3,7 +3,7 @@ import {Navbar,NavLink} from "react-bootstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faBars, faHome,faEnvelope,faBookOpen,faCode,faFolder,faComment,faPowerOff} from "@fortawesome/free-solid-svg-icons";
 import {Link} from "react-router-dom";
-
+import { ToastContainer, toast } from 'react-toastify';
 class SideBar extends Component {
 
     constructor(props) {
@@ -51,8 +51,9 @@ class SideBar extends Component {
 
                 <div className="mainDiv">
                     {this.props.children}
+                     <ToastContainer/>
                 </div>
-
+                
             </Fragment>
         );
     }

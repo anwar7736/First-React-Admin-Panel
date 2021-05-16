@@ -1,7 +1,7 @@
 import React, {Component, Fragment} from 'react';
 import Loading from '../components/loadingDiv';
 import Error from '../components/wentWrong';
-import {Button, Modal, Form} from 'react-bootstrap';
+import {Button, Modal, Form, Container} from 'react-bootstrap';
 import SideBar from '../components/SideBar';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
@@ -30,11 +30,16 @@ class ReviewPage extends Component {
 	componentDidMount(){
 		Axios.get('http://127.0.0.1:8000/ReviewList')
 		.then(response=>{
-			this.setState({Data : response.data});
-		})
-		.catch(error=>{
-			
-		})
+           if(response.status==200){
+                 this.setState({Data : response.data, isLoading:false});
+            }
+            else{
+                this.setState({isLoading:false,isError:true})
+            }
+        })
+        .catch(error=>{
+            this.setState({isLoading:false, isError:true});
+        })
 	}
 	modalOpen=()=>{
 		this.setState({addNewModal: true});
@@ -130,7 +135,27 @@ class ReviewPage extends Component {
 		return <img className="table-cell-img" src={cell}/>
 	}
     render() {
-    	
+    	if(this.state.isLoading==true && this.state.isError==false)
+        {
+            return (
+                    <SideBar title="Client Review">   
+                        <Container>
+                            <Loading/>
+                        </Container>
+                    </SideBar>
+                )
+        }
+        else if(this.state.isError==true && this.state.isLoading==false)
+        {
+              return (
+                    <SideBar title="Client Review">   
+                        <Container>
+                            <Error/>
+                        </Container>
+                    </SideBar>
+                )
+        }
+        else{
 		const allData = this.state.Data;
 
 		const columns = [
@@ -184,13 +209,14 @@ class ReviewPage extends Component {
                             </Form>
                         </Modal.Body>
                         <Modal.Footer>
-                            <Button variant="secondary" onClick={this.modalClose}>
+                            <Button variant="danger" size="sm" onClick={this.modalClose}>
                                 Close
                             </Button>
                         </Modal.Footer>
                     </Modal>
             </Fragment>
         );
+    	}
      }
     
 }

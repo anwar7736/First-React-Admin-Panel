@@ -4,6 +4,7 @@ import {Card, Col, Container, Row} from "react-bootstrap";
 import Axios from "axios";
 import LoadingDiv from "../components/loadingDiv";
 import WentWrong from "../components/wentWrong";
+import { ToastContainer, toast } from 'react-toastify';
 
 class HomePage extends Component {
 	constructor() {
@@ -15,8 +16,15 @@ class HomePage extends Component {
         }
     }
      componentDidMount() {
-
-
+                        toast.success('Welcome to our website!', {
+                        position: "top-center",
+                        autoClose: 3000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: false,
+                        draggable: true,
+                        progress: 0,
+                                });
         Axios.get('/CountSummary').then((response)=>{
             if(response.status==200){
                 this.setState({dataList:response.data,isLoading:false,isError:false})
@@ -29,6 +37,27 @@ class HomePage extends Component {
         })
     }
     render() {
+        if(this.state.isLoading==true && this.state.isError==false)
+        {
+            return (
+                    <SideBar title="Home">   
+                        <Container>
+                            <LoadingDiv/>
+                        </Container>
+                    </SideBar>
+                )
+        }
+        else if(this.state.isError==true && this.state.isLoading==false)
+        {
+              return (
+                    <SideBar title="Home">   
+                        <Container>
+                            <WentWrong/>
+                        </Container>
+                    </SideBar>
+                )
+        }
+        else{
     	const data = this.state.dataList;
         return (
             <Fragment>
@@ -81,6 +110,7 @@ class HomePage extends Component {
                 </SideBar>
             </Fragment>
         );
+    }
     }
 }
 

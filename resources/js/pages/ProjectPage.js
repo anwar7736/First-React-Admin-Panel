@@ -1,7 +1,7 @@
 import React, {Component, Fragment} from 'react';
 import Loading from '../components/loadingDiv';
 import Error from '../components/wentWrong';
-import {Button, Modal, Form} from 'react-bootstrap';
+import {Button, Modal, Form, Container} from 'react-bootstrap';
 import SideBar from '../components/SideBar';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
@@ -36,11 +36,16 @@ class ProjectPage extends Component {
 	componentDidMount(){
 		Axios.get('http://127.0.0.1:8000/ProjectList')
 		.then(response=>{
-			this.setState({Data : response.data});
-		})
-		.catch(error=>{
-			
-		})
+            if(response.status==200){
+                 this.setState({Data : response.data, isLoading:false});
+            }
+            else{
+                this.setState({isLoading:false,isError:true})
+            }
+        })
+        .catch(error=>{
+            this.setState({isLoading:false, isError:true});
+        })
 	}
 	modalOpen=()=>{
 		this.setState({addNewModal: true});
@@ -173,7 +178,27 @@ class ProjectPage extends Component {
 		return ReactHtmlParser(cell);
 	}
     render() {
-    	
+    	if(this.state.isLoading==true && this.state.isError==false)
+        {
+            return (
+                    <SideBar title="Projects">   
+                        <Container>
+                            <Loading/>
+                        </Container>
+                    </SideBar>
+                )
+        }
+        else if(this.state.isError==true && this.state.isLoading==false)
+        {
+              return (
+                    <SideBar title="Projects">   
+                        <Container>
+                            <Error/>
+                        </Container>
+                    </SideBar>
+                )
+        }
+        else{
 		const allData = this.state.Data;
 
 		const columns = [
@@ -204,9 +229,10 @@ class ProjectPage extends Component {
 
                 	/>
                 </SideBar>
-                <Modal  scrollable={true} size="lg" show={this.state.addNewModal} onHide={this.addNewModal}>
-                        <Modal.Header closeButton onClick={this.modalClose}>
+                <Modal scrollable={true} show={this.state.addNewModal} onHide={this.addNewModal}>
+                        <Modal.Header>
                             <h6>Add New Project</h6>
+                            <a style={{textDecoration:'none', cursor:'pointer'}} title="Close" className="btn-lg" onClick={this.modalClose}>&times;</a>
                         </Modal.Header>
                         <Modal.Body>
                             <Form onSubmit={this.addFormSubmit}>
@@ -245,13 +271,14 @@ class ProjectPage extends Component {
                             </Form>
                         </Modal.Body>
                         <Modal.Footer>
-                            <Button variant="secondary" onClick={this.modalClose}>
+                            <Button variant="danger" size="sm" onClick={this.modalClose}>
                                 Close
                             </Button>
                         </Modal.Footer>
                     </Modal>
             </Fragment>
         );
+        }
      }
     
 }

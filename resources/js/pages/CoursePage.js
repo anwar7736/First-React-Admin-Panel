@@ -1,14 +1,13 @@
 import React, {Component, Fragment} from 'react';
 import Loading from '../components/loadingDiv';
 import Error from '../components/wentWrong';
-import {Button, Modal, Form} from 'react-bootstrap';
+import {Button, Modal, Form, Container} from 'react-bootstrap';
 import SideBar from '../components/SideBar';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import cellEditFactory from 'react-bootstrap-table2-editor';
 import swal from 'sweetalert';
 import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import Axios from 'axios';
 import cogoToast from 'cogo-toast';
 import ReactQuill from 'react-quill';
@@ -38,11 +37,16 @@ class CoursePage extends Component {
 	componentDidMount(){
 		Axios.get('http://127.0.0.1:8000/CourseList')
 		.then(response=>{
-			this.setState({Data : response.data});
-		})
-		.catch(error=>{
-			
-		})
+             if(response.status==200){
+                 this.setState({Data : response.data, isLoading:false});
+            }
+            else{
+                this.setState({isLoading:false,isError:true})
+            }
+        })
+        .catch(error=>{
+            this.setState({isLoading:false, isError:true});
+        })
 	}
 	modalOpen=()=>{
 		this.setState({addNewModal: true});
@@ -93,35 +97,35 @@ class CoursePage extends Component {
         let video_url=this.state.video_url;
         if(short_title=='')
 		{
-			cogoToast.warn('Short title field is required!');
+			toast.error('Short title field is required!');
 		}
 		else if(short_des=='')
 		{
-			cogoToast.warn('Short description field is required!');
+			toast.error('Short description field is required!');
 		}
 		else if(long_title=='')
 		{
-			cogoToast.warn('Long title field is required!');
+			toast.error('Long title field is required!');
 		}
 		else if(long_des=='')
 		{
-			cogoToast.warn('Long description field is required!');
+			toast.error('Long description field is required!');
 		}
 		else if(small_img=='')
 		{
-			cogoToast.warn('Small image field is required!');
+			toast.error('Small image field is required!');
 		}
 		else if(skill_all=='')
 		{
-			cogoToast.warn('Skill all field is required!');
+			toast.error('Skill all field is required!');
 		}
 		else if(video_url=='')
 		{
-			cogoToast.warn('Video URL field is required!');
+			toast.error('Video URL field is required!');
 		}
 		else if(courses_link=='')
 		{
-			cogoToast.warn('Courses link field is required!');
+			toast.error('Courses link field is required!');
 		}
 		else{
 		this.setState({submitBtnText:'Submitting...'});
@@ -157,34 +161,91 @@ class CoursePage extends Component {
 							this.setState({video_url:''})
 							this.setState({small_img:''})
 							this.modalClose();
+                            toast.success('Data has been added', {
+                            position: "top-right",
+                            autoClose: 3000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: false,
+                            draggable: true,
+                            progress: 0,
+                        });
 							this.componentDidMount();
-							cogoToast.success('Data has been added');
-
 						},1000);
 
 					}
+                    else{
+                         toast.warn('Data has not been added', {
+                            position: "top-right",
+                            autoClose: 3000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: false,
+                            draggable: true,
+                            progress: 0,
+                        });
+                    }
 				}
 			})
 			.catch(error=>{
 				this.setState({submitBtnText:'Error'});
-				alert(error);
+				 toast.error('Something went wrong!', {
+                            position: "top-right",
+                            autoClose: 3000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: false,
+                            draggable: true,
+                            progress: 0,
+                        });
 			})
     }
     }
 	onClick=()=>{
 		if(this.state.deleteID===''){
-			cogoToast.warn('Please select any row!');
+			toast.warn('Please select any row!');
 		}else{
 			if(confirm('Do you want to delete this data?')){
 			Axios.post('http://127.0.0.1:8000/CourseDelete', {id: this.state.deleteID})
 			.then(response=>{
-					cogoToast.success('Data has been deleted');
-					this.componentDidMount();
-					this.setState({deleteID:''})
-			})
-			.catch(error=>{
-				cogoToast.error('Something went wrong!');
-			})
+                    if(response.status==200 & response.data==1)
+                    {
+                        toast.success('Delete has been deleted', {
+                        position: "bottom-center",
+                        autoClose: 3000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: false,
+                        draggable: true,
+                        progress: 0,
+                    });
+                        this.componentDidMount();
+                        this.setState({deleteID:''})
+                    }
+                    else{
+                        toast.error('Delete Failed', {
+                        position: "bottom-center",
+                        autoClose: 3000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: false,
+                        draggable: true,
+                        progress: 0,
+                    });
+                    }
+                    
+            })
+            .catch(error=>{
+                        toast.error('Something went wrong!', {
+                        position: "bottom-center",
+                        autoClose: 3000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: 0,
+                    });
+            })
 	}
 	}
 
@@ -193,7 +254,27 @@ class CoursePage extends Component {
 		return <img className="table-cell-img" src={cell}/>
 	}
     render() {
-    	
+    	if(this.state.isLoading==true && this.state.isError==false)
+        {
+            return (
+                    <SideBar title="Courses">   
+                        <Container>
+                            <Loading/>
+                        </Container>
+                    </SideBar>
+                )
+        }
+        else if(this.state.isError==true && this.state.isLoading==false)
+        {
+              return (
+                    <SideBar title="Courses">   
+                        <Container>
+                            <Error/>
+                        </Container>
+                    </SideBar>
+                )
+        }
+        else{
 		const allData = this.state.Data;
 
 		const columns = [
@@ -226,9 +307,9 @@ class CoursePage extends Component {
 
                 	/>
                 </SideBar>
-                 <Modal  scrollable={true} size="lg" show={this.state.addNewModal} onHide={this.addNewModal}>
+                 <Modal scrollable={true} show={this.state.addNewModal} onHide={this.addNewModal}>
                         <Modal.Header closeButton onClick={this.modalClose}>
-                            <h6>Add New Project</h6>
+                            <h5>Add New Project</h5>
                         </Modal.Header>
                         <Modal.Body>
                             <Form onSubmit={this.addFormSubmit}>
@@ -268,20 +349,21 @@ class CoursePage extends Component {
                                     <Form.Control onChange={this.onCourseLinkChange} type="text"  placeholder="Course Link" />
                                 </Form.Group>
 
-                                <Button variant="primary" type="submit">
+                                <Button className="btn-block" variant="success mb-2" type="submit">
                                     {this.state.submitBtnText}
                                 </Button>
 
                             </Form>
                         </Modal.Body>
                         <Modal.Footer>
-                            <Button variant="secondary" onClick={this.modalClose}>
+                            <Button variant="danger" size="sm" onClick={this.modalClose}>
                                 Close
                             </Button>
                         </Modal.Footer>
                     </Modal>
             </Fragment>
         );
+        }
      }
     
 }
