@@ -28,7 +28,7 @@ class ReviewPage extends Component {
 		}
 	}
 	componentDidMount(){
-		Axios.get('http://127.0.0.1:8000/ReviewList')
+		Axios.get('/ReviewList')
 		.then(response=>{
            if(response.status==200){
                  this.setState({Data : response.data, isLoading:false});
@@ -118,7 +118,7 @@ class ReviewPage extends Component {
 			cogoToast.warn('Please select any row!');
 		}else{
 			if(confirm('Do you want to delete this data?')){
-			Axios.post('http://127.0.0.1:8000/ReviewDelete', {id: this.state.deleteID})
+			Axios.post('/ReviewDelete', {id: this.state.deleteID})
 			.then(response=>{
 					cogoToast.success('Data has been deleted');
 					this.componentDidMount();

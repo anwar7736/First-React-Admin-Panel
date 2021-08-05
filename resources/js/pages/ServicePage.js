@@ -28,7 +28,7 @@ class ServicePage extends Component {
 		}
 	}
 	componentDidMount(){
-		Axios.get('http://127.0.0.1:8000/ServiceList')
+		Axios.get('/ServiceList')
 		.then(response=>{
             if(response.status==200){
                  this.setState({Data : response.data, isLoading:false});
@@ -116,7 +116,7 @@ class ServicePage extends Component {
 			cogoToast.warn('Please select any row!');
 		}else{
 			if(confirm('Do you want to delete this data?')){
-			Axios.post('http://127.0.0.1:8000/ServiceDelete', {id: this.state.deleteID})
+			Axios.post('/ServiceDelete', {id: this.state.deleteID})
 			.then(response=>{
 					cogoToast.success('Data has been deleted');
 					this.componentDidMount();

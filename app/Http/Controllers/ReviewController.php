@@ -18,7 +18,7 @@ class ReviewController extends Controller
         $id=$request->input('id');
 
         $client_img=ClientReviewModel::where('id',$id)->get();
-        $client_img_name=explode('/',$client_img[0]['client_img'])[4];
+        $client_img_name=explode('/',$client_img[0]['client_img'])[6];
         Storage::delete('public/'.$client_img_name);
         $result=ClientReviewModel::where('id',$id)->delete();
         return $result;
@@ -30,7 +30,7 @@ class ReviewController extends Controller
         $PhotoPath=$request->file('photo')->store('public');
         $PhotoName=explode("/", $PhotoPath)[1];
 
-        $PhotoURL="http://".$_SERVER['HTTP_HOST']."/storage/".$PhotoName;
+        $PhotoURL="https://".$_SERVER['HTTP_HOST']."/storage/app/public/".$PhotoName;
         $result= ClientReviewModel::insert(['client_img'=> $PhotoURL,'client_title'=>$title,'client_description'=>$des]);
         return $result;
     }

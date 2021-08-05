@@ -8,6 +8,24 @@ use Illuminate\Support\Facades\Storage;
 
 class CourseController extends Controller
 {
+
+
+   function onSelectFour(){
+        $result=CourseTableModel::limit(4)->get();
+        return $result;
+    }
+
+    function onSelectAll(){
+        $result=CourseTableModel::all();
+        return $result;
+    }
+
+    function onSelectDetails($CourseID){
+        $id=$CourseID;
+        $result=CourseTableModel::where(['id'=>$id])->get();
+        return $result;
+    }
+
     function CourseList(){
         $result=CourseTableModel::all();
         return $result;
@@ -16,7 +34,7 @@ class CourseController extends Controller
     function CourseDelete(Request $request){
         $id=$request->input('id');
         $db_image = CourseTableModel::where('id',$id)->get(['small_img']);
-        $img_name = explode('/', $db_image[0]['small_img'])[4];
+        $img_name = explode('/', $db_image[0]['small_img'])[6];
         $path_name = 'public/'.$img_name;
         Storage::delete($path_name);
         $result=CourseTableModel::where('id','=',$id)->delete();
@@ -33,7 +51,7 @@ class CourseController extends Controller
     	$video_url = $request->input('video_url');
     	$photoPath = $request->file('small_img')->store('public');
     	$photoName = explode("/", $photoPath)[1];
-    	$photoURL = "http://".$_SERVER['HTTP_HOST']."/storage/".$photoName;
+    	$photoURL = "https://".$_SERVER['HTTP_HOST']."/storage/app/public/".$photoName;
 
     	 $result= CourseTableModel::insert(['short_title'=>$short_title, 'short_des'=>$short_des, 'long_title'=>$long_title, 'long_des'=>$long_des, 'small_img'=>$photoURL, 'courses_link'=>$courses_link, 'video_url'=> $video_url, 'skill_all'=> $skill_all, 'total_student'=>50, 'total_lecture'=>30]);
         return $result;

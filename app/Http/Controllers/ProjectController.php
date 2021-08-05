@@ -10,6 +10,23 @@ use Illuminate\Support\Facades\Storage;
 
 class ProjectController extends Controller
 {
+    function onSelect3(){
+      $result= ProjectModel::limit(3)->get();
+      return $result;
+    }
+
+    function onSelectAll(){
+        $result= ProjectModel::all();
+        return $result;
+      }
+
+    function onSelectDetail($projectID){
+        $id= $projectID;
+        $result= ProjectModel::where(['id'=>$id])->get();
+        return $result;
+      }
+
+
     function ProjectList(){
         $result=ProjectModel::all();
         return $result;
@@ -20,8 +37,8 @@ class ProjectController extends Controller
 
         $img_one= ProjectModel::where('id',$id)->get(['img_one','img_two']);
 
-        $img_one_name=explode('/',$img_one[0]['img_one'])[4];
-        $img_two_name=explode('/',$img_one[0]['img_two'])[4];
+        $img_one_name=explode('/',$img_one[0]['img_one'])[6];
+        $img_two_name=explode('/',$img_one[0]['img_two'])[6];
 
         Storage::delete(['public/'.$img_one_name, 'public/'.$img_two_name]);
 
@@ -38,11 +55,11 @@ class ProjectController extends Controller
 
         $photoOnePath=$request->file('photoOne')->store('public');
         $photoOneName=explode("/", $photoOnePath)[1];
-        $photoOneURL="http://".$_SERVER['HTTP_HOST']."/storage/".$photoOneName;
+        $photoOneURL="https://".$_SERVER['HTTP_HOST']."/storage/app/public/".$photoOneName;
 
         $photoTwoPath=$request->file('photoTwo')->store('public');
         $photoTwoName=explode("/", $photoTwoPath)[1];
-        $photoTwoURL="http://".$_SERVER['HTTP_HOST']."/storage/".$photoTwoName;
+        $photoTwoURL="https://".$_SERVER['HTTP_HOST']."/storage/app/public/".$photoTwoName;
 
         $result= ProjectModel::insert(['img_one'=>$photoOneURL, 'img_two'=>$photoTwoURL, 'project_name'=>$projectName, 'short_description'=>$projectDes, 'project_features'=>$projectFeatures, 'live_preview'=>$projectLink]);
         return $result;

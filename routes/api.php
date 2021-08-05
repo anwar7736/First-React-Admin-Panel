@@ -2,17 +2,35 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ChartDataController;
+use App\Http\Controllers\ClientReviewController;
+use App\Http\Controllers\ContactController;
+use App\Http\Controllers\CourseController;
+use App\Http\Controllers\FooterController;
+use App\Http\Controllers\InformationController;
+use App\Http\Controllers\ServiceController;
+use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\HomeEtcController;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
-|
-*/
+Route::get('/ChartData', [ChartDataController::class, 'onAllSelect']);
+Route::get('/ClientReview', [ClientReviewController::class, 'onAllSelect']);
+Route::post('/ContactSend', [ContactController::class, 'onContactSend']);
+Route::get('/CourseHome', [CourseController::class, 'onSelectFour']);
+Route::get('/CourseAll', [CourseController::class, 'onSelectAll']);
+
+Route::get('/CourseDetails/{CourseID}', [CourseController::class, 'onSelectDetails']);
+
+Route::get('/Footer', [FooterController::class, 'onSelect']);
+Route::get('/Information', [InformationController::class, 'onSelect']);
+Route::get('/Services', [ServiceController::class, 'onSelect']);
+Route::get('/Project3', [ProjectController::class, 'onSelect3']);
+Route::get('/ProjectAll', [ProjectController::class, 'onSelectAll']);
+Route::get('/ProjectDetails/{projectID}', [ProjectController::class, 'onSelectDetail']);
+Route::get('/VideoHome', [HomeEtcController::class, 'onSelectVideo']);
+Route::get('/TotalProjectClient', [HomeEtcController::class, 'onSelectProjectClient']);
+Route::get('/TechDesc', [HomeEtcController::class, 'onSelectTechDesc']);
+Route::get('/HomeTopTitle', [HomeEtcController::class, 'onSelectHomeTitle']);
+
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();

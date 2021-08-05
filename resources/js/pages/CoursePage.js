@@ -35,7 +35,7 @@ class CoursePage extends Component {
 		}
 	}
 	componentDidMount(){
-		Axios.get('http://127.0.0.1:8000/CourseList')
+		Axios.get('/CourseList')
 		.then(response=>{
              if(response.status==200){
                  this.setState({Data : response.data, isLoading:false});
@@ -206,7 +206,7 @@ class CoursePage extends Component {
 			toast.warn('Please select any row!');
 		}else{
 			if(confirm('Do you want to delete this data?')){
-			Axios.post('http://127.0.0.1:8000/CourseDelete', {id: this.state.deleteID})
+			Axios.post('/CourseDelete', {id: this.state.deleteID})
 			.then(response=>{
                     if(response.status==200 & response.data==1)
                     {

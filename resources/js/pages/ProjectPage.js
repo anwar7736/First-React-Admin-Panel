@@ -34,7 +34,7 @@ class ProjectPage extends Component {
 		}
 	}
 	componentDidMount(){
-		Axios.get('http://127.0.0.1:8000/ProjectList')
+		Axios.get('/ProjectList')
 		.then(response=>{
             if(response.status==200){
                  this.setState({Data : response.data, isLoading:false});
@@ -158,7 +158,7 @@ class ProjectPage extends Component {
 		}
 		else{
 			if(confirm('Do you want to delete this data?')){
-			Axios.post('http://127.0.0.1:8000/ProjectDelete', {id: this.state.deleteID})
+			Axios.post('/ProjectDelete', {id: this.state.deleteID})
 			.then(response=>{
 					cogoToast.success('Data has been deleted');
 					this.componentDidMount();

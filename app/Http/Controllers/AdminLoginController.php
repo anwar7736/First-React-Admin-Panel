@@ -20,6 +20,7 @@ class AdminLoginController extends Controller
         if($count==1){
             $request->session()->put(['user_name'=>$UserName, 'user_pass'=>$Password]);
             return "1";
+            
         }else{
             return "0";
         }
