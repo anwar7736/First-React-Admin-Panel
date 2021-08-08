@@ -11,6 +11,16 @@ use App\Http\Controllers\InformationController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\HomeEtcController;
+use App\Http\Controllers\ReviewController;
+
+//Courses
+Route::post('/onEditCourse', [CourseController::class, 'onEditCourse']);
+//Project
+Route::post('/onEditProject', [ProjectController::class, 'onEditProject']);
+//Services
+Route::post('/onEditService', [ServiceController::class, 'onEditService']);
+//Review
+Route::post('/onEditReview', [ReviewController::class, 'onEditReview']);
 
 Route::get('/ChartData', [ChartDataController::class, 'onAllSelect']);
 Route::get('/ClientReview', [ClientReviewController::class, 'onAllSelect']);

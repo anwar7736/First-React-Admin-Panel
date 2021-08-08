@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\AdminLoginModel;
 use Illuminate\Http\Request;
-
+use Hash;
 class AdminLoginController extends Controller
 {
 
@@ -16,13 +16,13 @@ class AdminLoginController extends Controller
     function onLogin(Request $request){
         $UserName =$request->UserName;
         $Password =$request->Password;
-        $count=AdminLoginModel::where(['user_name'=>$UserName, 'password'=>$Password])->count();
-        if($count==1){
+        $user=AdminLoginModel::where('user_name', $UserName)->get();
+        if(count($user) > 0 && Hash::check($Password, $user[0]['password'])==true) {
             $request->session()->put(['user_name'=>$UserName, 'user_pass'=>$Password]);
             return "1";
             
         }else{
-            return "0";
+            return 0;
         }
     }
 

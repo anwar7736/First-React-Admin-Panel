@@ -9,6 +9,80 @@ use Illuminate\Support\Facades\Storage;
 class CourseController extends Controller
 {
 
+    
+   function GetCourseById(Request $req)
+   {
+       $CourseId = $req->id;
+       $result  = CourseTableModel::where('id', $CourseId)->get();
+       return $result;
+   }
+
+   function onEditCourse(Request $req)
+   {
+       $CourseId = $req->input('id');
+       $short_title = $req->input('short_title');
+       $short_des = $req->input('short_des');
+       $small_img = $req->file('small_img');
+       $long_title = $req->input('long_title');
+       $long_des = $req->input('long_des');
+       $total_lecture = $req->input('total_lecture');
+       $total_student = $req->input('total_student');
+       $skill_all = $req->input('skill_all');
+       $video_url = $req->input('video_url');
+       $courses_link = $req->input('courses_link');
+       
+       $getCourse = CourseTableModel::where(['id'=>$CourseId, 'short_title'=>$short_title])->count();
+       $isExist   = CourseTableModel::where('short_title', $short_title)->count();
+       if($getCourse===1 || $isExist===0)
+       {
+        if(empty($small_img))
+        {
+            $result = CourseTableModel::where('id', $CourseId)->update([
+                'short_title'=>$short_title,
+                'short_des'=>$short_des,
+                'long_title'=>$long_title,
+                'long_des'=>$long_des,
+                'total_lecture'=>$total_lecture,
+                'total_student'=>$total_student,
+                'skill_all'=>$skill_all,
+                'video_url'=>$video_url,
+                'courses_link'=>$courses_link
+            ]);
+
+            return $result;
+        }
+        else
+        {
+            $getData = CourseTableModel::where('id', $CourseId)->get();
+            $getImageName = explode('/', $getData[0]['small_img'])[6];
+            Storage::delete('public/'.$getImageName);
+            
+            $imagePath = $small_img->store('public');
+            $imageName = explode('/', $imagePath)[1];
+            $imageURL  = 'https://'.$_SERVER['HTTP_HOST'].'/storage/app/public/'.$imageName;
+            $result = CourseTableModel::where('id', $CourseId)->update([
+                'short_title'=>$short_title,
+                'short_des'=>$short_des,
+                'small_img'=>$imageURL,
+                'long_title'=>$long_title,
+                'long_des'=>$long_des,
+                'total_lecture'=>$total_lecture,
+                'total_student'=>$total_student,
+                'skill_all'=>$skill_all,
+                'video_url'=>$video_url,
+                'courses_link'=>$courses_link
+            ]);
+
+            return $result;
+
+
+        }
+       }
+       else
+       {
+           return "Short title already exists";
+       }
+   }
 
    function onSelectFour(){
         $result=CourseTableModel::limit(4)->get();

@@ -21,17 +21,22 @@ class CoursePage extends Component {
 			Data : [],
 			isLoading : true,
 			isError : false,
-			deleteID : '',
+			selectedID : '',
 			addNewModal : false,
 			short_title:'',
             short_des :'',
             small_img :'',
             long_title :'',
             long_des :'',
+            total_lecture :'',
+            total_student :'',
             skill_all :'',
             video_url  :'',
             courses_link  :'',
-            submitBtnText : 'Submit',
+            headerTitle : '',
+            submitBtnText : '',
+            isDisabled : true,
+            
 		}
 	}
 	componentDidMount(){
@@ -48,7 +53,57 @@ class CoursePage extends Component {
             this.setState({isLoading:false, isError:true});
         })
 	}
-	modalOpen=()=>{
+    resetForm=()=>{
+        this.setState({
+            short_title : '',
+            short_des : '',
+            small_img : '',
+            long_title : '',
+            long_des : '',
+            total_lecture : '',
+            total_student : '',
+            skill_all : '',
+            video_url : '',
+            courses_link : ''
+        });
+    }
+	modalOpen=(action)=>{
+        if(action==='Insert')
+        {
+            this.resetForm();
+            this.setState({submitBtnText: 'Submit', headerTitle : 'Add New Course'});
+        }
+        else if(action==='Update')
+        {
+            Axios.get('/GetCourseById/'+this.state.selectedID)
+            .then(response=>{
+                if(response.status==200)
+                {
+                    this.setState({
+                        short_title :  response.data[0]['short_title'],
+                        short_des :  response.data[0]['short_des'],
+                        small_img :  response.data[0]['small_img'],
+                        long_title :  response.data[0]['long_title'],
+                        long_des :  response.data[0]['long_des'],
+                        total_lecture :  response.data[0]['total_lecture'],
+                        total_student :  response.data[0]['total_student'],
+                        skill_all :  response.data[0]['skill_all'],
+                        video_url :  response.data[0]['video_url'],
+                        courses_link :  response.data[0]['courses_link']
+                    });
+                }
+
+                else
+                {
+
+                }
+            })
+            .catch(error=>{
+
+            })
+            this.setState({submitBtnText: 'Update', headerTitle : 'Edit Current Course'});
+        }
+
 		this.setState({addNewModal: true});
 	}
 	modalClose=()=>{
@@ -83,18 +138,23 @@ class CoursePage extends Component {
     onPhotoOneChange=(event)=>{
         this.setState({small_img:event.target.files[0]})
     }
-     addFormSubmit=(event)=>{
-
+    SubmitForm=(event)=>{
         event.preventDefault();
-
+        let action = this.state.submitBtnText;
+        let CourseId = this.state.selectedID;
         let short_title=this.state.short_title;
         let short_des=this.state.short_des;
         let long_title=this.state.long_title;
         let long_des=this.state.long_des;
+        let total_lecture=this.state.total_lecture;
+        let total_student=this.state.total_student;
         let small_img=this.state.small_img;
         let skill_all=this.state.skill_all;
         let courses_link=this.state.courses_link;
         let video_url=this.state.video_url;
+
+        if(action==='Submit')
+        {
         if(short_title=='')
 		{
 			toast.error('Short title field is required!');
@@ -134,16 +194,15 @@ class CoursePage extends Component {
         myFormData.append('short_des',short_des);
         myFormData.append('long_title',long_title);
         myFormData.append('long_des',long_des);
+        myFormData.append('total_lecture',total_lecture);
+        myFormData.append('total_student',total_student);
         myFormData.append('small_img',small_img);
         myFormData.append('skill_all',skill_all);
         myFormData.append('courses_link',courses_link);
         myFormData.append('video_url',video_url);
 
         let url="/AddCourse";
-        let config={
-            headers:{ 'content-type':'multipart/form-data'}
-        }
-        Axios.post(url,myFormData,config)
+        Axios.post(url,myFormData)
 			.then(response=>{
 				if(response.status==200)
 				{
@@ -152,14 +211,7 @@ class CoursePage extends Component {
 					{
 						setTimeout(()=>{
 							this.setState({submitBtnText:'Submit'});
-							this.setState({short_title:''})
-							this.setState({short_des:''})
-							this.setState({long_title:''});
-							this.setState({long_des:''});
-							this.setState({skill_all:''});
-							this.setState({courses_link:''})
-							this.setState({video_url:''})
-							this.setState({small_img:''})
+							this.resetForm();
 							this.modalClose();
                             toast.success('Data has been added', {
                             position: "top-right",
@@ -200,13 +252,118 @@ class CoursePage extends Component {
                         });
 			})
     }
+        }
+        else if(action==='Update')
+        {
+        if(short_title=='')
+		{
+			toast.error('Short title field is required!');
+		}
+		else if(short_des=='')
+		{
+			toast.error('Short description field is required!');
+		}
+		else if(long_title=='')
+		{
+			toast.error('Long title field is required!');
+		}
+		else if(long_des=='')
+		{
+			toast.error('Long description field is required!');
+		}
+		else if(skill_all=='')
+		{
+			toast.error('Skill all field is required!');
+		}
+		else if(video_url=='')
+		{
+			toast.error('Video URL field is required!');
+		}
+		else if(courses_link=='')
+		{
+			toast.error('Courses link field is required!');
+		}
+		else{
+		this.setState({submitBtnText:'Updating...'});
+        let myFormData=new FormData();
+        myFormData.append('id',CourseId);
+        myFormData.append('short_title',short_title);
+        myFormData.append('short_des',short_des);
+        myFormData.append('long_title',long_title);
+        myFormData.append('long_des',long_des);
+        myFormData.append('total_lecture',total_lecture);
+        myFormData.append('total_student',total_student);
+        myFormData.append('small_img',small_img);
+        myFormData.append('skill_all',skill_all);
+        myFormData.append('courses_link',courses_link);
+        myFormData.append('video_url',video_url);
+
+        let url="/api/onEditCourse";
+        Axios.post(url,myFormData)
+			.then(response=>{
+				if(response.status==200)
+				{
+					this.setState({submitBtnText:'Updated'});
+					if(response.data==1)
+					{
+						setTimeout(()=>{
+							this.setState({submitBtnText:'Update'});
+							this.resetForm();
+							this.modalClose();
+                            toast.success('Data has been updated', {
+                            position: "top-right",
+                            autoClose: 3000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: false,
+                            draggable: true,
+                            progress: 0,
+                        });
+							this.componentDidMount();
+						},1000);
+
+					}
+                    else if(response.data==0)
+                    {
+                        setTimeout(()=>{
+                        this.setState({submitBtnText:'Update'});
+                        cogoToast.info('Data is nothing to updated');
+
+                    },1000);
+                    }
+                    else if(response.data!=1 && response.data!=0){
+                        this.setState({submitBtnText:'Update'});
+                         toast.warn(response.data, {
+                            position: "top-right",
+                            autoClose: 3000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: false,
+                            draggable: true,
+                            progress: 0,
+                        });
+                    }
+				}
+			})
+			.catch(error=>{
+				this.setState({submitBtnText:'Error'});
+				 toast.error('Something went wrong!', {
+                            position: "top-right",
+                            autoClose: 3000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: false,
+                            draggable: true,
+                            progress: 0,
+                        });
+			})
+    }
+        }
     }
 	onClick=()=>{
-		if(this.state.deleteID===''){
-			toast.warn('Please select any row!');
-		}else{
+		if(this.state.selectedID!==null){
 			if(confirm('Do you want to delete this data?')){
-			Axios.post('/CourseDelete', {id: this.state.deleteID})
+			Axios.post('/CourseDelete', {id: this.state.selectedID})
 			.then(response=>{
                     if(response.status==200 & response.data==1)
                     {
@@ -220,7 +377,7 @@ class CoursePage extends Component {
                         progress: 0,
                     });
                         this.componentDidMount();
-                        this.setState({deleteID:''})
+                        this.setState({selectedID:''})
                     }
                     else{
                         toast.error('Delete Failed', {
@@ -288,7 +445,7 @@ class CoursePage extends Component {
 		const selectRow = {
 		  mode: 'radio',
 		  onSelect:(row, isSelect, rowIndex)=>{ 
-		  	this.setState({deleteID : row['id']})
+		  	this.setState({selectedID : row['id'], isDisabled: false})
 		  }
 		  
 		};
@@ -296,8 +453,9 @@ class CoursePage extends Component {
         return (
             <Fragment>
                 <SideBar title="Courses">
-                	<Button onClick={this.modalOpen} variant="success" className="btn-sm">Add New</Button>
-                	<Button onClick={this.onClick} variant="danger" className="btn-sm m-2">Delete</Button>
+                	<Button onClick={this.modalOpen.bind(this, 'Insert')} variant="success" className="btn-sm mr-2">Add</Button>
+                	<Button onClick={this.modalOpen.bind(this, 'Update')} variant="info" className="btn-sm ml-2" disabled={this.state.isDisabled}>Edit</Button>
+                	<Button onClick={this.onClick} variant="danger" className="btn-sm ml-2" disabled={this.state.isDisabled}>Delete</Button><br/><br/>
                 	<BootstrapTable 
                 		keyField='id' 
                 		data={ allData } 
@@ -307,52 +465,62 @@ class CoursePage extends Component {
 
                 	/>
                 </SideBar>
-                 <Modal scrollable={true} show={this.state.addNewModal} onHide={this.addNewModal}>
+                <Modal scrollable={true} show={this.state.addNewModal} onHide={this.state.addNewModal}>
                         <Modal.Header closeButton onClick={this.modalClose}>
-                            <h5>Add New Project</h5>
+                            <h5>{this.state.headerTitle}</h5>
                         </Modal.Header>
                         <Modal.Body>
-                            <Form onSubmit={this.addFormSubmit}>
+                            <Form onSubmit={this.SubmitForm}>
                                 <Form.Group >
                                     <Form.Label>Short Title</Form.Label>
-                                    <Form.Control onChange={this.onShortTitleChange} type="text" placeholder="Short Title" />
+                                    <Form.Control value={this.state.short_title} onChange={this.onShortTitleChange} type="text" placeholder="Short Title" />
                                 </Form.Group>
                                 <Form.Group >
                                     <Form.Label>Short Description</Form.Label>
-                                    <Form.Control  onChange={this.onShortDesChange} type="text" placeholder="Short Description" />
+                                    <Form.Control  value={this.state.short_des} onChange={this.onShortDesChange} type="text" placeholder="Short Description" />
                                 </Form.Group>
 
                                 <Form.Group className="mb-5" >
                                     <Form.Label>Long Title</Form.Label>
-                                    <Form.Control onChange={this.onLongTitleChange} type="text"  placeholder="Long Title" />
+                                    <Form.Control value={this.state.long_title} onChange={this.onLongTitleChange} type="text"  placeholder="Long Title" />
                                 </Form.Group>
 
                                 <Form.Group >
                                     <Form.Label>Long Description</Form.Label>
-                                    <Form.Control onChange={this.onLongDesChange} type="text" placeholder="Long Description" />
+                                    <Form.Control value={this.state.long_des} onChange={this.onLongDesChange} type="text" placeholder="Long Description" />
+                                </Form.Group> 
+                                
+                                <Form.Group >
+                                    <Form.Label>Total Lecture</Form.Label>
+                                    <Form.Control value={this.state.total_lecture} onChange={(e)=>{this.setState({total_lecture: e.target.value})}} type="text" placeholder="Long Description" />
+                                </Form.Group> 
+                                
+                                <Form.Group >
+                                    <Form.Label>Total Student</Form.Label>
+                                    <Form.Control value={this.state.total_student} onChange={(e)=>{this.setState({total_student: e.target.value})}} type="text" placeholder="Long Description" />
                                 </Form.Group>
 
                                 <Form.Group >
                                     <Form.Label>Small Image</Form.Label>
                                     <Form.Control onChange={this.onPhotoOneChange} type="file" />
+                                    <img className="mt-3" src={this.state.small_img} width="100" height="100"/>
                                 </Form.Group>
                                 <Form.Group >
                                     <Form.Label>Skill All</Form.Label>
-                                    <ReactQuill  onChange={this.onSkillAllChange} className="h-50" theme="snow" placeholder="Write Something..." />
+                                    <ReactQuill  value={this.state.skill_all} onChange={this.onSkillAllChange} className="h-50" theme="snow" placeholder="Write Something..." />
                                 </Form.Group> 
                                 <Form.Group >
                                     <Form.Label>Video URL</Form.Label>
-                                    <Form.Control onChange={this.onVideoURLChange} type="text"  placeholder="Video URL" />
+                                    <Form.Control value={this.state.video_url} onChange={this.onVideoURLChange} type="text"  placeholder="Video URL" />
                                 </Form.Group> 
                                 <Form.Group >
                                     <Form.Label>Course Link</Form.Label>
-                                    <Form.Control onChange={this.onCourseLinkChange} type="text"  placeholder="Course Link" />
+                                    <Form.Control value={this.state.courses_link} onChange={this.onCourseLinkChange} type="text"  placeholder="Course Link" />
                                 </Form.Group>
 
                                 <Button className="btn-block" variant="success mb-2" type="submit">
                                     {this.state.submitBtnText}
                                 </Button>
-
                             </Form>
                         </Modal.Body>
                         <Modal.Footer>
@@ -360,7 +528,8 @@ class CoursePage extends Component {
                                 Close
                             </Button>
                         </Modal.Footer>
-                    </Modal>
+                    </Modal> 
+                    
             </Fragment>
         );
         }
