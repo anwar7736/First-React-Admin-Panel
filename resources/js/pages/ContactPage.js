@@ -10,6 +10,7 @@ import swal from 'sweetalert';
 import { ToastContainer, toast } from 'react-toastify';
 import Axios from 'axios';
 import cogoToast from 'cogo-toast';
+import {Redirect} from 'react-router';
 
 class ContactPage extends Component {
 	constructor(){
@@ -19,9 +20,16 @@ class ContactPage extends Component {
 			isLoading : true,
 			isError : false,
 			deleteID : '',
+			redirectStatus : false,
 		}
 	}
 	componentDidMount(){
+		let user = localStorage.getItem('login');
+        if(user==null)
+        {
+            this.setState({redirectStatus: true});
+        }
+
 		Axios.get('/ContactList')
 		.then(response=>{
 			 if(response.status==200){
@@ -84,6 +92,14 @@ class ContactPage extends Component {
 }
 
 	}
+	RedirectToLogin=()=>{
+        if(this.state.redirectStatus===true)
+        {
+            return(
+                <Redirect to="/admin_login" />
+            )
+        }
+    }
     render() {
     	if(this.state.isLoading==true && this.state.isError==false)
         {
@@ -134,6 +150,7 @@ class ContactPage extends Component {
 
                 	/>
                 </SideBar>
+				{this.RedirectToLogin()}
             </Fragment>
         );
     	}

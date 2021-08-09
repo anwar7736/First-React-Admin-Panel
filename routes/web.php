@@ -57,7 +57,6 @@ Route::post('/ChangePassword', [PasswordController::class, 'ChangePassword']);
 
 //Admin Login Manage....
 Route::get('/login',[AdminLoginController::class, 'LoginPage'])->middleware('CheckSession');
-Route::get('/onLogin/{UserName}/{Password}',[AdminLoginController::class, 'onLogin']);
 Route::get('/logout',[AdminLoginController::class, 'onLogout']);
 
 //Route::group(['middleware'=> 'CheckLogin'], function(){

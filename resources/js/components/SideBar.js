@@ -1,5 +1,6 @@
 import React, {Component, Fragment} from 'react';
 import {Navbar,NavLink} from "react-bootstrap";
+import {Redirect} from 'react-router';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faBars, faHome,faEnvelope,faBookOpen,faCode,faFolder,faComment,faPowerOff, faKey} from "@fortawesome/free-solid-svg-icons";
 import {Link} from "react-router-dom";
@@ -12,7 +13,8 @@ class SideBar extends Component {
             sideNav:false,
             sideNavClass:"sidenavClose",
             NavText:"d-none",
-            mainDivOverlay:"main-overlay-close"
+            mainDivOverlay:"main-overlay-close",
+            redirectStatus : false,
         }
     }
 
@@ -26,8 +28,33 @@ class SideBar extends Component {
         }
     }
 
-
+    Logout=()=>
+    {
+        localStorage.clear();
+        this.setState({redirectStatus:true});
+    }
+    RedirectToLogin=()=>{
+        if(this.state.redirectStatus===true)
+        {
+            return(
+                <Redirect to="/admin_login"/>
+            )
+        }
+    }
     render() {
+        let user = localStorage.getItem('login');
+        let login_logout = 
+            
+             user==null ? 
+                <>
+                     <NavLink><a className="NavItem" to="/admin_login"> <FontAwesomeIcon icon={faPowerOff} /> <span className={this.state.NavText}>Sign In</span></a></NavLink>
+                </>
+             :
+             
+            <>
+                 <NavLink><a className="NavItem" onClick={this.Logout} > <FontAwesomeIcon icon={faPowerOff} /> <span className={this.state.NavText}>Sign Out</span></a></NavLink>
+            </>
+        
         return (
             <Fragment>
                 <title>{this.props.title}</title>
@@ -44,7 +71,10 @@ class SideBar extends Component {
                     <NavLink><Link className="NavItem" to="/services"> <FontAwesomeIcon icon={faFolder} /> <span className={this.state.NavText}>Services</span></Link></NavLink>
                     <NavLink><Link className="NavItem" to="/review"> <FontAwesomeIcon icon={faComment} /> <span className={this.state.NavText}>Review</span></Link></NavLink>
                     <NavLink><Link className="NavItem" to="/changePassword"> <FontAwesomeIcon icon={faKey} /> <span className={this.state.NavText}>Change Password</span></Link></NavLink>
-                    <a className=" ml-3 NavItem" href="/logout"> <FontAwesomeIcon icon={faPowerOff} /> <span className={this.state.NavText}>Sign Out</span></a>
+                   {
+                       login_logout
+                   }
+            
                 </div>
                 <div onClick={this.showHideSideNav} className={this.state.mainDivOverlay}>
 
@@ -54,7 +84,7 @@ class SideBar extends Component {
                     {this.props.children}
                      <ToastContainer/>
                 </div>
-                
+                {this.RedirectToLogin()}
             </Fragment>
         );
     }

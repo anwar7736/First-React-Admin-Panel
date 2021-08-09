@@ -13,6 +13,7 @@ import cogoToast from 'cogo-toast';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import ReactHtmlParser from 'react-html-parser';
+import {Redirect} from 'react-router';
 
 class CoursePage extends Component {
 	constructor(){
@@ -36,10 +37,17 @@ class CoursePage extends Component {
             headerTitle : '',
             submitBtnText : '',
             isDisabled : true,
+            redirectStatus : false,
             
 		}
 	}
 	componentDidMount(){
+        let user = localStorage.getItem('login');
+        if(user==null)
+        {
+            this.setState({redirectStatus: true});
+        }
+
 		Axios.get('/CourseList')
 		.then(response=>{
              if(response.status==200){
@@ -410,6 +418,14 @@ class CoursePage extends Component {
 	imgCellFormat=(cell, rowIndex)=>{
 		return <img className="table-cell-img" src={cell}/>
 	}
+    RedirectToLogin=()=>{
+        if(this.state.redirectStatus===true)
+        {
+            return(
+                <Redirect to="/admin_login" />
+            )
+        }
+    }
     render() {
     	if(this.state.isLoading==true && this.state.isError==false)
         {
@@ -529,7 +545,7 @@ class CoursePage extends Component {
                             </Button>
                         </Modal.Footer>
                     </Modal> 
-                    
+                {this.RedirectToLogin()}
             </Fragment>
         );
         }

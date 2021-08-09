@@ -14,6 +14,7 @@ import cogoToast from 'cogo-toast';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import ReactHtmlParser from 'react-html-parser';
+import {Redirect} from 'react-router';
 
 class ProjectPage extends Component {
 	constructor(){
@@ -33,9 +34,16 @@ class ProjectPage extends Component {
             headerTitle : '',
             submitBtnText : '',
             isDisabled : true,
+            redirectStatus : false,
 		}
 	}
 	componentDidMount(){
+        let user = localStorage.getItem('login');
+        if(user==null)
+        {
+            this.setState({redirectStatus: true});
+        }
+
 		Axios.get('/ProjectList')
 		.then(response=>{
             if(response.status==200){
@@ -310,6 +318,14 @@ class ProjectPage extends Component {
 	cellFormatter=(cell, rowIndex)=>{
 		return ReactHtmlParser(cell);
 	}
+    RedirectToLogin=()=>{
+        if(this.state.redirectStatus===true)
+        {
+            return(
+                <Redirect to="/admin_login" />
+            )
+        }
+    }
     render() {
     	if(this.state.isLoading==true && this.state.isError==false)
         {
@@ -412,6 +428,7 @@ class ProjectPage extends Component {
                             </Button>
                         </Modal.Footer>
                     </Modal>
+                {this.RedirectToLogin()}
             </Fragment>
         );
         }

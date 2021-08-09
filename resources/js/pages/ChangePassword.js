@@ -10,18 +10,29 @@ import swal from 'sweetalert';
 import { ToastContainer, toast } from 'react-toastify';
 import Axios from 'axios';
 import cogoToast from 'cogo-toast';
+import {Redirect} from 'react-router';
 
 class ChangePassword extends Component {
 	constructor(){
 		super()
 		this.state = {
-			user : 'admin',
+			user : '',
             newPass : '',
             confirmPass : '',
+            redirectStatus : false,
 
 		}
 	}
 	componentDidMount(){
+        let user = localStorage.getItem('login');
+        if(user!==null)
+        {
+            this.setState({user: user});
+        }
+        if(user==null)
+        {
+            this.setState({redirectStatus: true});
+        }
     }
     ChangePassword=(e)=>{
         e.preventDefault();
@@ -52,7 +63,8 @@ class ChangePassword extends Component {
                 {
                     cogoToast.success('Password Updated Successfully');
                     setTimeout(()=>{
-                        return window.location.href="/logout";
+                        localStorage.clear();
+                        this.setState({redirectStatus : true});
                     },2000);
                 }
                 else
@@ -63,6 +75,15 @@ class ChangePassword extends Component {
             .catch(error=>{
                 cogoToast.error('Something went wrong!');
             })
+        }
+    }
+
+    RedirectToLogin=()=>{
+        if(this.state.redirectStatus===true)
+        {
+            return(
+                <Redirect to="/admin_login" />
+            )
         }
     }
     render(){
@@ -96,6 +117,7 @@ class ChangePassword extends Component {
                         </Row>
                     </Container>
                 </SideBar>
+                {this.RedirectToLogin()}
             </Fragment>
         );
     	

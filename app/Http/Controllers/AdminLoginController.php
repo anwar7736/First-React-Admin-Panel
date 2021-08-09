@@ -14,14 +14,15 @@ class AdminLoginController extends Controller
 
 
     function onLogin(Request $request){
-        $UserName =$request->UserName;
-        $Password =$request->Password;
+        $UserName =$request->input('username');
+        $Password =$request->input('password');
         $user=AdminLoginModel::where('user_name', $UserName)->get();
-        if(count($user) > 0 && Hash::check($Password, $user[0]['password'])==true) {
-            $request->session()->put(['user_name'=>$UserName, 'user_pass'=>$Password]);
-            return "1";
-            
-        }else{
+        if(count($user) > 0 && Hash::check($Password, $user[0]['password'])==true) 
+        {
+            return 1;
+        }
+        else
+        {
             return 0;
         }
     }

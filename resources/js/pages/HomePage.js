@@ -5,6 +5,7 @@ import Axios from "axios";
 import LoadingDiv from "../components/loadingDiv";
 import WentWrong from "../components/wentWrong";
 import { ToastContainer, toast } from 'react-toastify';
+import {Redirect} from 'react-router';
 
 class HomePage extends Component {
 	constructor() {
@@ -13,9 +14,16 @@ class HomePage extends Component {
             dataList:[],
             isLoading:true,
             isError:false,
+            redirectStatus : false,
         }
     }
      componentDidMount() {
+        let user = localStorage.getItem('login');
+        if(user==null)
+        {
+            this.setState({redirectStatus: true});
+        }
+
                         toast.success('Welcome to our website!', {
                         position: "top-center",
                         autoClose: 3000,
@@ -35,6 +43,14 @@ class HomePage extends Component {
         }).catch((error)=>{
             this.setState({isLoading:false,isError:true})
         })
+    }
+    RedirectToLogin=()=>{
+        if(this.state.redirectStatus===true)
+        {
+            return(
+                <Redirect to="/admin_login" />
+            )
+        }
     }
     render() {
         if(this.state.isLoading==true && this.state.isError==false)
@@ -106,8 +122,8 @@ class HomePage extends Component {
                                 </Col>
                             </Row>
                         </Container>
-
                 </SideBar>
+                {this.RedirectToLogin()}
             </Fragment>
         );
     }

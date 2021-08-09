@@ -11,6 +11,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Axios from 'axios';
 import cogoToast from 'cogo-toast';
+import {Redirect} from 'react-router';
 
 class ServicePage extends Component {
 	constructor(){
@@ -27,9 +28,16 @@ class ServicePage extends Component {
 			headerTitle : '',
             submitBtnText : '',
 			isDisabled : true,
+			redirectStatus : false,
 		}
 	}
 	componentDidMount(){
+		let user = localStorage.getItem('login');
+        if(user==null)
+        {
+            this.setState({redirectStatus: true});
+        }
+
 		Axios.get('/ServiceList')
 		.then(response=>{
             if(response.status==200){
@@ -239,6 +247,15 @@ class ServicePage extends Component {
 	imgCellFormat=(cell, rowIndex)=>{
 		return <img className="table-cell-img" src={cell}/>
 	}
+	RedirectToLogin=()=>{
+        if(this.state.redirectStatus===true)
+        {
+            return(
+                <Redirect to="/admin_login" />
+            )
+        }
+    }
+
     render() {
     	if(this.state.isLoading==true && this.state.isError==false)
         {
@@ -324,6 +341,7 @@ class ServicePage extends Component {
                             </Button>
                         </Modal.Footer>
                     </Modal>
+					{this.RedirectToLogin()}
             </Fragment>
         );
     	}

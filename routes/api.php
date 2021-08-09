@@ -12,13 +12,27 @@ use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\HomeEtcController;
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\AdminLoginController;
+use App\Http\Controllers\PasswordController;
+
+//Admin Login
+Route::post('/onLogin',[AdminLoginController::class, 'onLogin']);
+
+//Password Recover
+Route::post('/EmailVerification', [PasswordController::class, 'EmailVerification']);
+Route::post('/GetOTPExpiration', [PasswordController::class, 'GetOTPExpiration']);
+Route::post('/OTPVerification', [PasswordController::class, 'OTPVerification']);
+Route::post('/ForgetPassword', [PasswordController::class, 'ForgetPassword']);
 
 //Courses
 Route::post('/onEditCourse', [CourseController::class, 'onEditCourse']);
+
 //Project
 Route::post('/onEditProject', [ProjectController::class, 'onEditProject']);
+
 //Services
 Route::post('/onEditService', [ServiceController::class, 'onEditService']);
+
 //Review
 Route::post('/onEditReview', [ReviewController::class, 'onEditReview']);
 
